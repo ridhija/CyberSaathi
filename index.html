@@ -30,7 +30,57 @@ gu:{eyebrow:"દરેક માટે ઓનલાઇન સુરક્ષા"
 };
 let lang="en",q=0,answered=false;const $=id=>document.getElementById(id);
 function render(){const t=T[lang];document.documentElement.lang=lang;$("langLabel").firstChild.textContent=({en:"Choose language ",hi:"भाषा चुनें ",pa:"ਭਾਸ਼ਾ ਚੁਣੋ ",bn:"ভাষা বাছুন ",mr:"भाषा निवडा ",ta:"மொழியைத் தேர்ந்தெடுக்கவும் ",te:"భాషను ఎంచుకోండి ",gu:"ભાષા પસંદ કરો "})[lang];["eyebrow","title","intro","tag","learnTitle","quizTag","quizTitle","scenario","question","checkTitle","checkIntro","notice","footerText"].forEach(k=>$(k).textContent=t[k]);$("cards").innerHTML=t.cards.map(c=>'<article class="card"><div class="icon">'+c[0]+'</div><h2>'+c[1]+'</h2><p class="muted">'+c[2]+'</p></article>').join("");$("checklist").innerHTML=t.checks.map((c,i)=>'<label class="checkrow"><input type="checkbox" class="check" id="c'+i+'"><span>'+c+'</span></label>').join("");document.querySelectorAll(".check").forEach(x=>x.addEventListener("change",updateProgress));showQuestion()}
-function showQuestion(){const t=T[lang];$("scenario").textContent=q===0?t.scenario:q===1?({en:"“Your bank account will be blocked. Confirm your PIN at this link.”",hi:"“आपका बैंक खाता बंद हो जाएगा। इस लिंक पर अपना PIN डालें।”",pa:"“ਤੁਹਾਡਾ ਬੈਂਕ ਖਾਤਾ ਬੰਦ ਹੋ ਜਾਵੇਗਾ। ਲਿੰਕ 'ਤੇ PIN ਭਰੋ।”",bn:"“আপনার ব্যাংক অ্যাকাউন্ট বন্ধ হবে। লিঙ্কে PIN দিন।”",mr:"“तुमचे बँक खाते बंद होईल. लिंकवर PIN भरा.”",ta:"“உங்கள் வங்கிக் கணக்கு முடக்கப்படும். இணைப்பில் PIN உள்ளிடுங்கள்.”",te:"“మీ బ్యాంక్ ఖాతా బ్లాక్ అవుతుంది. లింక్‌లో PIN ఇవ్వండి.”",gu:"“તમારું બેંક ખાતું બંધ થશે. લિંક પર PIN આપો.”"})[lang]:({en:"A friend messages: “I lost my phone. Send me the six-digit code you just received.”",hi:"दोस्त का संदेश: “मेरा फोन खो गया। तुम्हारे पास आया छह अंकों का कोड भेज दो।”",pa:"ਦੋਸਤ ਦਾ ਸੁਨੇਹਾ: “ਮੇਰਾ ਫ਼ੋਨ ਗੁੰਮ ਗਿਆ। ਛੇ ਅੰਕਾਂ ਵਾਲਾ ਕੋਡ ਭੇਜੋ।”",bn:"বন্ধুর বার্তা: “ফোন হারিয়েছি, তোমার কাছে আসা ছয় সংখ্যার কোড পাঠাও।”",mr:"मित्राचा संदेश: “माझा फोन हरवला. तुला आलेला सहा अंकी कोड पाठव.”",ta:"நண்பர்: “என் கைபேசி தொலைந்தது. உனக்கு வந்த ஆறு இலக்கக் குறியீட்டை அனுப்பு.”",te:"స్నేహితుడు: “నా ఫోన్ పోయింది. నీకు వచ్చిన ఆరు అంకెల కోడ్ పంపు.”",gu:"મિત્રનો સંદેશ: “મારો ફોન ખોવાયો. તને આવેલો છ અંકનો કોડ મોકલ.”"})[lang];$("answers").innerHTML=t.answers.map((a,i)=>'<button data-i="'+i+'">'+a+'</button>').join("");$("answers").querySelectorAll("button").forEach(b=>b.onclick=()=>{if(answered)return;answered=true;const ok=Number(b.dataset.i)===(q===0?1:q===1?1:0);$("feedback").textContent=ok?t.good:t.bad;$("next").hidden=false;$("answers").querySelectorAll("button").forEach(x=>x.disabled=true)});$("feedback").textContent="";$("next").hidden=true;answered=false}
+function showQuestion(){
+const t=T[lang];
+const scenarios={
+en:[
+["“Your parcel is on hold. Pay ₹10 now using this unfamiliar link or it will be returned.”",["Pay quickly so the parcel is not returned","Do not click. Check the order in the official app or website","Reply with your OTP to confirm"],1],
+["“Your bank account will be blocked. Confirm your PIN at this link.”",["Open the link and enter your PIN","Call the number in the message and share your details","Do not use the link; contact your bank through its official app or number"],2],
+["A friend messages: “I lost my phone. Send me the six-digit code you just received.”",["Never share the code; contact your friend using a trusted method","Send the code because it is your friend","Post the code in the group chat"],0]],
+hi:[
+["“आपका पार्सल रोक दिया गया है। इस अनजान लिंक पर अभी ₹10 दें, वरना पार्सल वापस चला जाएगा।”",["जल्दी भुगतान कर दें","लिंक न खोलें। आधिकारिक ऐप या वेबसाइट पर ऑर्डर जाँचें","पुष्टि के लिए अपना OTP भेज दें"],1],
+["“आपका बैंक खाता बंद हो जाएगा। इस लिंक पर अपना PIN डालें।”",["लिंक खोलकर PIN डाल दें","मैसेज में दिए नंबर पर कॉल करके जानकारी दे दें","लिंक इस्तेमाल न करें; बैंक के आधिकारिक ऐप या नंबर से संपर्क करें"],2],
+["दोस्त का संदेश: “मेरा फोन खो गया। तुम्हारे पास आया छह अंकों का कोड भेज दो।”",["कोड साझा न करें; भरोसेमंद तरीके से दोस्त से संपर्क करें","दोस्त है, इसलिए कोड भेज दें","कोड group chat में भेज दें"],0]],
+pa:[
+["“ਤੁਹਾਡਾ ਪਾਰਸਲ ਰੋਕਿਆ ਗਿਆ ਹੈ। ਅਣਜਾਣ ਲਿੰਕ ਰਾਹੀਂ ਹੁਣੇ ₹10 ਭਰੋ।”",["ਜਲਦੀ ਭੁਗਤਾਨ ਕਰੋ","ਲਿੰਕ ਨਾ ਖੋਲ੍ਹੋ; ਅਧਿਕਾਰਤ ਐਪ ਵਿੱਚ ਆਰਡਰ ਜਾਂਚੋ","ਆਪਣਾ OTP ਭੇਜੋ"],1],
+["“ਤੁਹਾਡਾ ਬੈਂਕ ਖਾਤਾ ਬੰਦ ਹੋ ਜਾਵੇਗਾ। ਲਿੰਕ 'ਤੇ PIN ਭਰੋ।”",["ਲਿੰਕ ਖੋਲ੍ਹ ਕੇ PIN ਭਰੋ","ਸੁਨੇਹੇ ਵਿੱਚ ਦਿੱਤੇ ਨੰਬਰ 'ਤੇ ਜਾਣਕਾਰੀ ਦਿਓ","ਲਿੰਕ ਨਾ ਵਰਤੋ; ਬੈਂਕ ਦੀ ਅਧਿਕਾਰਤ ਐਪ ਜਾਂ ਨੰਬਰ ਰਾਹੀਂ ਸੰਪਰਕ ਕਰੋ"],2],
+["ਦੋਸਤ ਦਾ ਸੁਨੇਹਾ: “ਮੇਰਾ ਫ਼ੋਨ ਗੁੰਮ ਗਿਆ। ਛੇ ਅੰਕਾਂ ਵਾਲਾ ਕੋਡ ਭੇਜੋ।”",["ਕੋਡ ਸਾਂਝਾ ਨਾ ਕਰੋ; ਦੋਸਤ ਨਾਲ ਭਰੋਸੇਯੋਗ ਤਰੀਕੇ ਨਾਲ ਸੰਪਰਕ ਕਰੋ","ਕੋਡ ਭੇਜ ਦਿਓ","ਕੋਡ ਗਰੁੱਪ ਵਿੱਚ ਪਾ ਦਿਓ"],0]],
+bn:[
+["“আপনার পার্সেল আটকে আছে। অচেনা লিঙ্কে এখনই ₹10 দিন।”",["তাড়াতাড়ি টাকা দিন","লিঙ্কে ক্লিক করবেন না; অফিসিয়াল অ্যাপে অর্ডার দেখুন","OTP পাঠিয়ে দিন"],1],
+["“আপনার ব্যাংক অ্যাকাউন্ট বন্ধ হবে। লিঙ্কে PIN দিন।”",["লিঙ্ক খুলে PIN দিন","বার্তায় দেওয়া নম্বরে তথ্য দিন","লিঙ্ক ব্যবহার করবেন না; ব্যাংকের অফিসিয়াল অ্যাপ বা নম্বরে যোগাযোগ করুন"],2],
+["বন্ধুর বার্তা: “ফোন হারিয়েছি, তোমার কাছে আসা ছয় সংখ্যার কোড পাঠাও।”",["কোড দেবেন না; পরিচিত নিরাপদ উপায়ে বন্ধুর সঙ্গে যোগাযোগ করুন","কোড পাঠিয়ে দিন","গ্রুপে কোড পাঠান"],0]],
+mr:[
+["“तुमचे पार्सल थांबवले आहे. अनोळखी लिंकवर आत्ताच ₹10 भरा.”",["लगेच पैसे भरा","लिंक उघडू नका; अधिकृत अॅपमध्ये ऑर्डर तपासा","OTP पाठवा"],1],
+["“तुमचे बँक खाते बंद होईल. लिंकवर PIN भरा.”",["लिंक उघडून PIN भरा","संदेशातील नंबरवर वैयक्तिक माहिती द्या","लिंक वापरू नका; बँकेच्या अधिकृत अॅप किंवा नंबरवर संपर्क करा"],2],
+["मित्राचा संदेश: “माझा फोन हरवला. तुला आलेला सहा अंकी कोड पाठव.”",["कोड शेअर करू नका; मित्राशी विश्वासार्ह मार्गाने संपर्क करा","कोड पाठवा","ग्रुपमध्ये कोड टाका"],0]],
+ta:[
+["“உங்கள் பார்சல் நிறுத்தப்பட்டுள்ளது. தெரியாத இணைப்பில் உடனே ₹10 செலுத்துங்கள்.”",["உடனே பணம் செலுத்தவும்","இணைப்பைத் திறக்காமல் அதிகாரப்பூர்வ செயலியில் ஆர்டரைச் சரிபார்க்கவும்","OTP அனுப்பவும்"],1],
+["“உங்கள் வங்கிக் கணக்கு முடக்கப்படும். இணைப்பில் PIN உள்ளிடுங்கள்.”",["இணைப்பைத் திறந்து PIN உள்ளிடுங்கள்","செய்தியில் உள்ள எண்ணுக்கு விவரங்களை அனுப்புங்கள்","இணைப்பைப் பயன்படுத்தாமல் வங்கியின் அதிகாரப்பூர்வ செயலி அல்லது எண்ணைத் தொடர்புகொள்ளுங்கள்"],2],
+["நண்பர்: “என் கைபேசி தொலைந்தது. உனக்கு வந்த ஆறு இலக்கக் குறியீட்டை அனுப்பு.”",["குறியீட்டைப் பகிர வேண்டாம்; நம்பகமான வழியில் நண்பரைத் தொடர்புகொள்ளுங்கள்","குறியீட்டை அனுப்புங்கள்","குழுவில் குறியீட்டை அனுப்புங்கள்"],0]],
+te:[
+["“మీ పార్సెల్ ఆగిపోయింది. తెలియని లింక్‌లో వెంటనే ₹10 చెల్లించండి.”",["వెంటనే చెల్లించండి","లింక్ తెరవకండి; అధికారిక యాప్‌లో ఆర్డర్ చూడండి","OTP పంపండి"],1],
+["“మీ బ్యాంక్ ఖాతా బ్లాక్ అవుతుంది. లింక్‌లో PIN ఇవ్వండి.”",["లింక్ తెరిచి PIN ఇవ్వండి","సందేశంలోని నంబర్‌కు వివరాలు పంపండి","లింక్ వాడకండి; బ్యాంక్ అధికారిక యాప్ లేదా నంబర్ ద్వారా సంప్రదించండి"],2],
+["స్నేహితుడు: “నా ఫోన్ పోయింది. నీకు వచ్చిన ఆరు అంకెల కోడ్ పంపు.”",["కోడ్ పంచుకోకండి; నమ్మకమైన మార్గంలో స్నేహితుడిని సంప్రదించండి","కోడ్ పంపండి","గ్రూప్‌లో కోడ్ పెట్టండి"],0]],
+gu:[
+["“તમારું પાર્સલ રોકાયું છે. અજાણી લિંક પર હમણાં જ ₹10 ભરો.”",["તરત ચુકવણી કરો","લિંક ન ખોલો; સત્તાવાર એપમાં ઓર્ડર તપાસો","OTP મોકલો"],1],
+["“તમારું બેંક ખાતું બંધ થશે. લિંક પર PIN આપો.”",["લિંક ખોલીને PIN આપો","સંદેશમાં આપેલા નંબર પર વિગતો આપો","લિંક ન વાપરો; બેંકની સત્તાવાર એપ અથવા નંબરથી સંપર્ક કરો"],2],
+["મિત્રનો સંદેશ: “મારો ફોન ખોવાયો. તને આવેલો છ અંકનો કોડ મોકલ.”",["કોડ શેર ન કરો; વિશ્વસનીય રીતે મિત્રનો સંપર્ક કરો","કોડ મોકલી દો","ગ્રુપમાં કોડ મૂકો"],0]]
+};
+const item=scenarios[lang][q];
+$("scenario").textContent=item[0];
+$("answers").innerHTML=item[1].map((a,i)=>'<button data-i="'+i+'">'+a+'</button>').join("");
+$("answers").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+if(answered)return;
+answered=true;
+const ok=Number(b.dataset.i)===item[2];
+$("feedback").textContent=ok?t.good:t.bad;
+$("next").hidden=false;
+$("answers").querySelectorAll("button").forEach(x=>x.disabled=true)
+});
+$("feedback").textContent="";
+$("next").hidden=true;
+answered=false
+}
 function updateProgress(){const n=[...document.querySelectorAll(".check")].filter(x=>x.checked).length;const formats={en:n+" of 4 completed",hi:"4 में से "+n+" पूरे",pa:"4 ਵਿੱਚੋਂ "+n+" ਪੂਰੇ",bn:"৪টির মধ্যে "+n+" সম্পন্ন",mr:"४ पैकी "+n+" पूर्ण",ta:"4-இல் "+n+" முடிந்தது",te:"4లో "+n+" పూర్తయ్యాయి",gu:"4માંથી "+n+" પૂર્ણ"};$("progress").textContent=formats[lang]}
 $("lang").addEventListener("change",e=>{lang=e.target.value;render();updateProgress()});$("next").addEventListener("click",()=>{q=(q+1)%3;showQuestion()});render();updateProgress();
 </script></body></html>
