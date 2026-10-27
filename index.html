@@ -35,6 +35,27 @@
 <article class="redflag"><div class="icon">3️⃣</div><strong id="step3Title">Report</strong><p class="muted" id="step3Text">Report the message as spam or phishing and delete it.</p></article>
 </div>
 </section>
+<section class="card" id="interactiveLab" style="margin:28px 0">
+<div class="section-kicker">HANDS-ON DEMO</div>
+<h2>Phishing Message Lab</h2>
+<p class="muted">Practice identifying warning signs in a fictional message. This is a training simulation—not a real message scanner.</p>
+<div class="sample-message">
+<div class="pill">SIMULATED MESSAGE</div>
+<h3 id="labSender">Delivery Support • Unknown sender</h3>
+<p id="labMessage">“Your parcel is delayed. Pay ₹10 in the next 10 minutes using this link or it will be returned. Confirm your phone number and OTP.”</p>
+</div>
+<p><strong>Which warning signs can you spot?</strong> Select all that apply:</p>
+<div id="labOptions" class="grid">
+<label class="checkrow"><input type="checkbox" value="urgency"><span>Urgent pressure / जल्दी करने का दबाव</span></label>
+<label class="checkrow"><input type="checkbox" value="link"><span>Unknown payment link / अनजान भुगतान लिंक</span></label>
+<label class="checkrow"><input type="checkbox" value="secret"><span>Asks for an OTP / OTP माँगना</span></label>
+<label class="checkrow"><input type="checkbox" value="safe"><span>Verified through official app / आधिकारिक ऐप से जाँच</span></label>
+</div>
+<button type="button" id="labCheck">Check my answer</button>
+<button type="button" id="labReset" style="margin-left:8px">Try again</button>
+<p id="labFeedback" class="feedback" role="status" aria-live="polite"></p>
+<div id="labReveal" class="notice" hidden><strong>Learning point:</strong> Scammers may create urgency, use unfamiliar links and ask for sensitive information. Do not click or pay. Check independently through the official app or contact details.</div>
+</section>
 <section class="quiz"><span class="pill" id="quizTag">PRACTICE ZONE</span><h2 id="quizTitle">Spot the scam</h2><p id="scenario">“Your parcel is on hold. Pay ₹10 now using this unfamiliar link or it will be returned.”</p><p class="muted" id="question">What should you do?</p><div class="answers" id="answers"></div><p class="feedback" id="feedback" role="status" aria-live="polite"></p><button id="next" hidden>Next example →</button></section>
 <section class="check-wrap"><div class="section-kicker" id="checkKicker">SMALL STEPS, SAFER DAYS</div><h2 id="checkTitle">My quick safety checklist</h2><p class="muted" id="checkIntro">Tick a card when you practise that safety habit.</p><div id="checklist"></div><div class="progress-wrap"><span class="muted" id="progressLabel">Your progress</span><span id="progress" class="pill">0 of 4 completed</span></div><div class="progress-track" aria-hidden="true"><div id="progressFill" class="progress-fill"></div></div></section>
 <section class="card" id="shareSection" style="margin:24px 0">
@@ -128,5 +149,16 @@ const v=translations[lang]||translations.en;
 Object.keys(v).forEach(k=>{if($(k))$(k).textContent=v[k]});
 }
 function updateProgress(){const n=[...document.querySelectorAll(".check")].filter(x=>x.checked).length;const formats={en:n+" of 4 completed",hi:"4 में से "+n+" पूरे",pa:"4 ਵਿੱਚੋਂ "+n+" ਪੂਰੇ",bn:"৪টির মধ্যে "+n+" সম্পন্ন",mr:"४ पैकी "+n+" पूर्ण",ta:"4-இல் "+n+" முடிந்தது",te:"4లో "+n+" పూర్తయ్యాయి",gu:"4માંથી "+n+" પૂર્ણ"};$("progress").textContent=formats[lang];$("progressFill").style.width=(n/4*100)+"%"}
+const labCorrect=["urgency","link","secret"];
+$("labCheck").addEventListener("click",()=>{
+ const picked=[...document.querySelectorAll("#labOptions input:checked")].map(x=>x.value);
+ const correct=picked.length===labCorrect.length && labCorrect.every(x=>picked.includes(x));
+ $("labFeedback").textContent=correct?"Correct! You spotted all three warning signs. / सही! आपने तीनों खतरे के संकेत पहचान लिए।":"Not quite—look for urgency, an unfamiliar payment link, and the request for an OTP. / जल्दी करने का दबाव, अनजान लिंक और OTP माँगने पर ध्यान दें।";
+ $("labReveal").hidden=false;
+});
+$("labReset").addEventListener("click",()=>{
+ document.querySelectorAll("#labOptions input").forEach(x=>x.checked=false);
+ $("labFeedback").textContent=""; $("labReveal").hidden=true;
+});
 $("lang").addEventListener("change",e=>{lang=e.target.value;render();updateProgress()});$("next").addEventListener("click",()=>{q=(q+1)%3;showQuestion()});render();updateProgress();
 </script></body></html>
